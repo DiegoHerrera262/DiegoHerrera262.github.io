@@ -30,7 +30,8 @@ instagram_username: diegoherrera262
 github_username:  diegoherrera262
 
 # Build settings
-theme: minima
+# Removed minima for customization (regular theme)
+# theme: minima
 plugins:
   - jekyll-feed
 
