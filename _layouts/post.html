@@ -3,6 +3,40 @@ layout: default
 ---
 <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
+  {%- if page.banner -%}
+  <div class="banner">
+    <img src="{{post.banner | relative_url}}" alt="{{site.title | escape}}" width=auto height=auto></img>
+  </div>
+  {%- else -%}
+  {%- if site.defbanner-QC and  page.category=="QuantumComputing"-%}
+  <div class="banner">
+    <img src="{{site.defbanner-QC | relative_url}}" alt="{{site.title | escape}}"></img>
+  </div>
+  {%- else -%}
+  {%- if site.defbanner-ML and  page.category=="MachineLearning"-%}
+  <div class="banner">
+    <img src="{{site.defbanner-ML | relative_url}}" alt="{{site.title | escape}}"></img>
+  </div>
+  {%- else -%}
+  {%- if site.defbanner-WD and  page.category=="WebDevelopment"-%}
+  <div class="banner">
+    <img src="{{site.defbanner-WD | relative_url}}" alt="{{site.title | escape}}"></img>
+  </div>
+  {%- else -%}
+  {%- if site.defbanner-AD and  page.category=="Algorithms"-%}
+  <div class="banner">
+    <img src="{{site.defbanner-AD | relative_url}}" alt="{{site.title | escape}}"></img>
+  </div>
+  {%- else -%}
+  <div class="banner">
+    <img src="{{site.defbanner | relative_url}}" alt="{{site.title | escape}}"></img>
+  </div>
+  {%- endif -%}
+  {%- endif -%}
+  {%- endif -%}
+  {%- endif -%}
+  {%- endif -%}
+
   <header class="post-header">
     <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
     <p class="post-meta">
@@ -17,6 +51,31 @@ layout: default
 
   <div class="post-content e-content" itemprop="articleBody">
     {{ content }}
+  </div>
+
+  {% assign cat = page.categories[0] %}
+  {% assign cat_list = site.categories[cat] %}
+  {% for post in cat_list %}
+    {% if post.url == page.url %}
+  	 {% assign pOffset = forloop.index0 | minus: 1 %}
+  	 {% assign nOffset = pOffset | plus: 2 %}
+  	 {% if forloop.first == false %}
+  	  {% assign previous_post = cat_list[pOffset] %}
+  	 {% endif %}
+  	 {% if forloop.last == false %}
+  	  {% assign next_post = cat_list[nOffset] %}
+  	 {% endif %}
+  	 {% break %}
+    {% endif %}
+  {% endfor %}
+
+  <div class="PageNavigation">
+    {% if previous_post.url %}
+      <a class="prev" href="{{previous_post.url}}">&laquo; {{previous_post.title}}</a>
+    {% endif %}
+    {% if next_post.url %}
+      <a class="next" href="{{next_post.url}}">{{next_post.title}} &raquo;</a>
+    {% endif %}
   </div>
 
   {%- if site.disqus.shortname -%}

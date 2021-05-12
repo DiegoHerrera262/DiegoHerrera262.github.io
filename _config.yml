@@ -18,22 +18,50 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Diego Alejandro Herrera Rojas
+title: Official DAHR
 email: diegoherrera262@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   Physics student at Universidad Nacional de Colombia.
-  Specializing on Quantum Computing, Machine Learning,
-  Quantum Chemistry and web development.
+  Specializing on quantum computing, machine learning,
+  web development, and computer science in general.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://diegoherrera262.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 instagram_username: diegoherrera262
 github_username:  diegoherrera262
+
+## My personal site vars
+# Default post author
+author: Diego Herrera
+
+# Home banner
+home-banner: /assets/images/Banners/Home.png
+
+# QC banner
+defbanner-QC: /assets/images/Banners/QuantumComputing.png
+# QC thumbnail
+defthumbnail-QC: /assets/images/Thumbnails/QC_Default.png
+
+# ML banner
+defbanner-ML: /assets/images/Banners/MachineLearning.png
+# ML thumbnail
+defthumbnail-ML: /assets/images/Thumbnails/ML_Default.png
+
+# WD banner
+defbanner-WD: /assets/images/Banners/WebDevelopment.png
+# WD thumbnail
+defthumbnail-WD: /assets/images/Thumbnails/WD_Default.png
+
+# AD banner
+defbanner-AD: /assets/images/Banners/Algorithms.png
+# AD thumbnail
+defthumbnail-AD: /assets/images/Thumbnails/AD_Default.png
 
 # Build settings
 # Removed minima for customization (regular theme)
 # theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-seo
 
 # Exclude from processing.
 # The following items will not be processed, by default.

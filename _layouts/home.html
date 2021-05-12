@@ -3,6 +3,19 @@ layout: default
 ---
 
 <div class="home">
+
+  {%- if page.banner -%}
+  <div class="banner">
+    <img src="{{post.banner | relative_url}}" alt="{{site.title | escape}}" width=auto height=auto></img>
+  </div>
+  {%- else -%}
+  {%- if site.home-banner -%}
+  <div class="banner">
+    <img src="{{site.home-banner | relative_url}}" alt="{{site.title | escape}}"></img>
+  </div>
+  {%- endif -%}
+  {%- endif -%}
+
   {%- if page.title -%}
     <h1 class="page-heading">{{ page.title }}</h1>
   {%- endif -%}
@@ -10,6 +23,132 @@ layout: default
   {{ content }}
 
   {%- if site.posts.size > 0 -%}
+
+  <h2 class="post-list-heading">{{ page.list_title | default: "Quantum Computing" }}</h2>
+  <div class="thumbnail-col-wrapper">
+    {%- for post in site.categories.QuantumComputing limit:3-%}
+    <div class="thumbnail-col">
+      <!--
+      This is for post thumbnail thumbnail
+      -->
+      {%- if post.thumbnail -%}
+        <img src="{{post.thumbnail | relative_url}}" alt="{{site.title | escape}}" width="200" height="200"></img>
+      {%- else -%}
+        {%- if site.defthumbnail-QC -%}
+          <img src="{{site.defthumbnail-QC | relative_url}}" alt="{{site.title | escape}}" width="200" height="200"></img>
+        {%- endif -%}
+      {%- endif -%}
+      <li>
+        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+        <span class="post-meta">{{ post.date | date: date_format }}</span>
+        <h3>
+          <a class="post-link-main" href="{{ post.url | relative_url }}">
+          {{ post.title | escape }}
+          </a>
+        </h3>
+        <!--{%- if site.show_excerpts -%}-->
+          {{ post.excerpt }}
+        <!--{%- endif -%}-->
+      </li>
+    </div>
+    {%- endfor -%}
+  </div>
+  <p><a class="page-link" href="{{ site.baseurl }}{% link QuantumComputing/index.markdown %}">For related posts, click here.</a></p>
+
+  <h2 class="post-list-heading">{{ page.list_title | default: "Machine Learning" }}</h2>
+  <div class="thumbnail-col-wrapper">
+    {%- for post in site.categories.MachineLearning limit:3-%}
+    <div class="thumbnail-col">
+      <!--
+      This is for post thumbnail thumbnail
+      -->
+      {%- if post.thumbnail -%}
+        <img src="{{post.thumbnail | relative_url}}" alt="{{site.title | escape}}" width="200" height="200"></img>
+      {%- else -%}
+        {%- if site.defthumbnail-ML -%}
+          <img src="{{site.defthumbnail-ML | relative_url}}" alt="{{site.title | escape}}" width="200" height="200"></img>
+        {%- endif -%}
+      {%- endif -%}
+      <li>
+        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+        <span class="post-meta">{{ post.date | date: date_format }}</span>
+        <h3>
+          <a class="post-link-main" href="{{ post.url | relative_url }}">
+          {{ post.title | escape }}
+          </a>
+        </h3>
+        <!--{%- if site.show_excerpts -%}-->
+          {{ post.excerpt }}
+        <!--{%- endif -%}-->
+      </li>
+    </div>
+    {%- endfor -%}
+  </div>
+  <p><a class="page-link" href="{{ site.baseurl }}{% link MachineLearning/index.markdown %}">For related posts, click here.</a></p>
+
+  <h2 class="post-list-heading">{{ page.list_title | default: "Web Development" }}</h2>
+  <div class="thumbnail-col-wrapper">
+    {%- for post in site.categories.WebDevelopment limit:3-%}
+    <div class="thumbnail-col">
+      <!--
+      This is for post thumbnail thumbnail
+      -->
+      {%- if post.thumbnail -%}
+        <img src="{{post.thumbnail | relative_url}}" alt="{{site.title | escape}}" width="200" height="200"></img>
+      {%- else -%}
+        {%- if site.defthumbnail-ML -%}
+          <img src="{{site.defthumbnail-WD | relative_url}}" alt="{{site.title | escape}}" width="200" height="200"></img>
+        {%- endif -%}
+      {%- endif -%}
+      <li>
+        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+        <span class="post-meta">{{ post.date | date: date_format }}</span>
+        <h3>
+          <a class="post-link-main" href="{{ post.url | relative_url }}">
+          {{ post.title | escape }}
+          </a>
+        </h3>
+        <!--{%- if site.show_excerpts -%}-->
+          {{ post.excerpt }}
+        <!--{%- endif -%}-->
+      </li>
+    </div>
+    {%- endfor -%}
+  </div>
+  <p><a class="page-link" href="{{ site.baseurl }}{% link WebDevelopment/index.markdown %}">For related posts, click here.</a></p>
+
+  <h2 class="post-list-heading">{{ page.list_title | default: "Algorithms & Data Structures" }}</h2>
+  <div class="thumbnail-col-wrapper">
+    {%- for post in site.categories.Algorithms limit:3-%}
+    <div class="thumbnail-col">
+      <!--
+      This is for post thumbnail thumbnail
+      -->
+      {%- if post.thumbnail -%}
+        <img src="{{post.thumbnail | relative_url}}" alt="{{site.title | escape}}" width="200" height="200"></img>
+      {%- else -%}
+        {%- if site.defthumbnail-ML -%}
+          <img src="{{site.defthumbnail-AD | relative_url}}" alt="{{site.title | escape}}" width="200" height="200"></img>
+        {%- endif -%}
+      {%- endif -%}
+      <li>
+        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+        <span class="post-meta">{{ post.date | date: date_format }}</span>
+        <h3>
+          <a class="post-link-main" href="{{ post.url | relative_url }}">
+          {{ post.title | escape }}
+          </a>
+        </h3>
+        <!--{%- if site.show_excerpts -%}-->
+          {{ post.excerpt }}
+        <!--{%- endif -%}-->
+      </li>
+    </div>
+    {%- endfor -%}
+  </div>
+  <p><a class="page-link" href="{{ site.baseurl }}{% link Algorithms/index.markdown %}">For related posts, click here.</a></p>
+
+  <!--
     <h2 class="post-list-heading">{{ page.list_title | default: "Posts" }}</h2>
     <ul class="post-list">
       {%- for post in site.posts -%}
@@ -30,5 +169,5 @@ layout: default
 
     <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
   {%- endif -%}
-
+  -->
 </div>

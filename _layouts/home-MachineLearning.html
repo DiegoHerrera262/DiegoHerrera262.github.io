@@ -1,0 +1,57 @@
+---
+layout: default
+---
+
+<div class="home">
+  {%- if page.banner -%}
+  <div class="banner">
+    <img src="{{post.banner | relative_url}}" alt="{{site.title | escape}}" width=auto height=auto></img>
+  </div>
+  {%- else -%}
+  {%- if site.defbanner-ML -%}
+  <div class="banner">
+    <img src="{{site.defbanner-ML | relative_url}}" alt="{{site.title | escape}}"></img>
+  </div>
+  {%- endif -%}
+  {%- endif -%}
+
+  {%- if page.title -%}
+    <h1 class="page-heading">{{ page.title }}</h1>
+  {%- endif -%}
+
+  {{ content }}
+
+  {%- if site.categories.QuantumComputing.size > 0 -%}
+    <h2 class="post-list-heading">{{ page.list_title | default: "Articles" }}</h2>
+    {%- for post in site.categories.QuantumComputing -%}
+    <div class="col-wrapper">
+      <div class="mycol col2">
+        <p align="center">
+        {%- if post.thumbnail -%}
+          <img src="{{post.thumbnail | relative_url}}" alt="{{site.title | escape}}" width="200" height="200"></img>
+        {%- else -%}
+          {%- if site.defthumbnail-ML -%}
+            <img src="{{site.defthumbnail-ML | relative_url}}" alt="{{site.title | escape}}" width="200" height="200"></img>
+          {%- endif -%}
+        {%- endif -%}
+        </p>
+      </div>
+      <div class="mycol col2">
+        <li>
+          {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+          <span class="post-meta">{{ post.date | date: date_format }}</span>
+          <h3>
+            <a class="post-link" href="{{ post.url | relative_url }}">
+            {{ post.title | escape }}
+            </a>
+          </h3>
+          <!--{%- if site.show_excerpts -%}-->
+            {{ post.excerpt }}
+          <!--{%- endif -%}-->
+        </li>
+      </div>
+    </div>
+    {%- endfor -%}
+  {%- endif -%}
+
+</div>
