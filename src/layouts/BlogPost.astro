@@ -5,80 +5,53 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
+import TerminalWindow from '../components/TerminalWindow.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 ---
 
 <html lang="en">
 	<head>
 		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
 	</head>
 
 	<body>
 		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
+		<main class="flex-1 px-4 py-8 sm:px-6">
+			<article class="mx-auto max-w-3xl">
+				{
+					heroImage && (
+						<Image
+							width={1020}
+							height={510}
+							src={heroImage}
+							alt=""
+							class="mb-6 w-full rounded-lg border border-ctp-surface0"
+						/>
+					)
+				}
+				<TerminalWindow path={`~/${slug}.md`}>
+					<div class="mb-6 text-center">
+						<p class="text-sm text-ctp-subtext1">
 							<FormattedDate date={pubDate} />
 							{
 								updatedDate && (
-									<div class="last-updated-on">
+									<span class="mt-1 block italic">
 										Last updated on <FormattedDate date={updatedDate} />
-									</div>
+									</span>
 								)
 							}
-						</div>
-						<h1>{title}</h1>
-						<hr />
+						</p>
+						<h1 class="mt-2 text-3xl font-bold text-ctp-text sm:text-4xl">{title}</h1>
+						<hr class="mt-6" />
 					</div>
-					<slot />
-				</div>
+					<div class="prose prose-ctp max-w-none">
+						<slot />
+					</div>
+				</TerminalWindow>
 			</article>
 		</main>
 		<Footer />
