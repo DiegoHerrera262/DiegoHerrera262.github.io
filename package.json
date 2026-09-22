@@ -24,7 +24,9 @@
     "esbuild": true
   },
   "devDependencies": {
+    "@astrojs/language-server": "^2.16.16",
     "@catppuccin/tailwindcss": "^1.0.0",
-    "@tailwindcss/typography": "^0.5.20"
+    "@tailwindcss/typography": "^0.5.20",
+    "typescript": "^7.0.2"
   }
 }

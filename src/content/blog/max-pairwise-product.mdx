@@ -1,0 +1,90 @@
+---
+title: Max pairwise product
+date: 2026-08-15
+tags: ["learning","computer-science","research"]
+---
+
+# Context
+
+Find the maximum product of two distinct numbers in a sequence of non
+negative integers.
+
+**INPUT:** An integer (n) and a sequence of n non negative integers.
+**OUTPUT:** An integer corresponding to the solution.
+
+# Insights
+
+This is a simple problem, but I want to use it as a showcase of
+functional programming concepts. To get a grasp of the mechanics, let's
+consider a simple input example:
+
+``` clojure
+[1 10 6 4 5 11]
+```
+
+## Naive solution
+
+The most direct solution to this problem can be to simply compute all
+the pairwise products of the elements of the input, and grab the maximum
+value
+
+| x   | 1   | 10  | 6   | 4   | 5   | 11  |
+|-----|-----|-----|-----|-----|-----|-----|
+| 1   |     |     |     |     |     |     |
+| 10  | 10  |     |     |     |     |     |
+| 6   | 6   | 60  |     |     |     |     |
+| 4   | 4   | 40  | 24  |     |     |     |
+| 5   | 5   | 50  | 30  | 20  |     |     |
+| 11  | 11  | 110 | 66  | 44  | 55  |     |
+
+It is very important to note that due to the commutative nature of
+multiplication of numbers, we can forget about the upper left of the
+matrix above. This implies that we have to compute n(n-1)/2 products,
+and then find the maximum of all of them, which takes the same amount of
+number comparisons. In our example, it is readily seen that 110 is the
+maximum pairwise product.
+
+## A more efficient solution
+
+Since we're considering non negative integers, it is almost evident that
+the max pairwise product is actually the product of the two largest
+numbers. So, we just have to find such numbers. The simplest strategy we
+can find mimics the way world boxing championship is defined:
+
+> We select a provisional maximum value and second maximum value. Then
+> those values are challenged by a given element of the array. If a
+> challenge is won by an array element, then the maximum and second
+> maximum values are changed according to the challenge result.
+
+Eventually, after all the elements of the array participate in the
+contest, most definitely the maximum and second maximum element should
+be found, and computing their product provides the answer to the
+problem.
+
+### How the challenge works
+
+- An array element, say el-i, will challenge the second maximum element
+  first.
+- If el-i \< second maximum element, then the top 2 are not updated.
+- If el-i \> second maximum element, then el-i challenges the maximum
+  element.
+- If el-i \< maximum number, then el-i replaces the second maximum
+  number.
+- Finally, if el-i \>= maximum number, then el-i replaces the maximum
+  number, and the maximum number replaces the second maximum number.
+
+This sounds like a lot of validations, but making an analogy with boxing
+makes it super clear, at least for me. When the reigning champion is
+defeated, the defeater becomes the new champion, and the defeated
+champion falls to second place. We only have to add a new rule: any
+challenger to the world title has to challenge the second in ranking
+first to face the current champion. Not sure if that actually happens in
+boxing, but it is not an obscure rule to ask. As if the second was the
+champions bodyguard or something like that.
+
+# Related Resources
+
+- [Miro
+  Board](https://miro.com/app/board/uXjVHxy_KlU=/?moveToWidget=3458764680863993747&cot=14)
+- [In this doc, it is mentioned that there are far more efficient
+  solutions](chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://alexanderskulikov.github.io/files/toolbox_statements.pdf?utm_source=coursera&utm_medium=materials&utm_campaign=link)

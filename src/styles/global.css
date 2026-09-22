@@ -14,6 +14,13 @@
 }
 
 @layer base {
+	:root {
+		/* Single source for the content H1 size; the post "hero" title is
+		   deliberately 1.3x this (see BlogPost.astro) instead of a second,
+		   independently-tunable magic number. */
+		--content-h1-size: 1.875rem;
+	}
+
 	html {
 		@apply bg-ctp-base;
 	}
@@ -36,8 +43,9 @@
 		@apply rounded bg-ctp-surface0 px-1.5 py-0.5 text-ctp-mauve;
 	}
 
+	/* Border/rounding lives on CodeBlockWindow's chrome now, not the raw <pre>. */
 	pre {
-		@apply overflow-x-auto rounded-lg border border-ctp-surface0 bg-ctp-crust p-4;
+		@apply overflow-x-auto bg-ctp-crust p-4;
 	}
 
 	pre code {
@@ -101,4 +109,8 @@
 	--tw-prose-pre-bg: var(--color-ctp-crust);
 	--tw-prose-th-borders: var(--color-ctp-surface0);
 	--tw-prose-td-borders: var(--color-ctp-surface0);
+
+	:where(h1) {
+		font-size: var(--content-h1-size);
+	}
 }

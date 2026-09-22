@@ -1,0 +1,146 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+import Tag from './Tag.astro';
+
+interface Props {
+	posts: CollectionEntry<'blog'>[];
+	descriptions: Record<string, string>;
+	activeTag: string;
+}
+
+const { posts, descriptions, activeTag } = Astro.props;
+const allTags = [...new Set(posts.flatMap((post) => post.data.tags))].sort();
+---
+
+<blog-browser class="contents">
+	<div class="mb-4 flex items-center gap-2 border-b border-ctp-surface0 pb-4 font-mono text-sm">
+		<span class="text-ctp-green">$</span>
+		<input
+			data-search
+			type="text"
+			autocomplete="off"
+			spellcheck="false"
+			placeholder="search posts..."
+			class="flex-1 bg-transparent text-ctp-text outline-none placeholder:text-ctp-subtext0"
+		/>
+		<button
+			data-clear
+			type="button"
+			class="shrink-0 text-xs text-ctp-subtext1 underline-offset-2 hover:text-ctp-mauve hover:underline"
+		>
+			clear ×
+		</button>
+	</div>
+
+	{
+		allTags.length > 0 && (
+			<div data-tag-filters class="mb-6 flex flex-wrap gap-2">
+				{allTags.map((tag) => (
+					<Tag tag={tag} as="button" active={tag === activeTag} />
+				))}
+			</div>
+		)
+	}
+
+	<p data-count class="mb-2 text-xs text-ctp-subtext1">
+		{posts.length} post{posts.length === 1 ? '' : 's'}
+	</p>
+
+	<ul data-post-list class="divide-y divide-ctp-surface0">
+		{
+			posts.map((post) => (
+				<li>
+					<a
+						href={`/blog/${post.id}/`}
+						data-title={post.data.title.toLowerCase()}
+						data-description={(descriptions[post.id] ?? '').toLowerCase()}
+						data-tags={post.data.tags.join(',')}
+						class="group flex flex-col gap-2 rounded px-3 py-3 no-underline transition-colors hover:bg-ctp-crust sm:flex-row sm:items-center sm:justify-between"
+					>
+						<div class="min-w-0">
+							<p class="truncate font-semibold text-ctp-text">
+								<span class="text-ctp-green">›</span> {post.data.title}
+							</p>
+							{post.data.tags.length > 0 && (
+								<ul class="mt-1 flex flex-wrap gap-1">
+									{post.data.tags.map((tag) => (
+										<li>
+											<Tag tag={tag} />
+										</li>
+									))}
+								</ul>
+							)}
+						</div>
+						<p class="shrink-0 text-xs text-ctp-subtext1">
+							<FormattedDate date={post.data.date} />
+						</p>
+					</a>
+				</li>
+			))
+		}
+	</ul>
+	<p data-empty class="hidden py-6 text-center text-sm text-ctp-subtext1">No posts match that search.</p>
+</blog-browser>
+
+<script>
+	// The `<blog-browser>` custom element (defined once, used wherever this
+	// component is rendered) owns its own client-side behavior, scoped to
+	// itself (`this`) rather than global `document` lookups.
+	class BlogBrowser extends HTMLElement {
+		connectedCallback() {
+			const searchInput = this.querySelector('[data-search]') as HTMLInputElement;
+			const rows = Array.from(this.querySelectorAll<HTMLAnchorElement>('[data-post-list] a'));
+			const chips = Array.from(this.querySelectorAll<HTMLButtonElement>('[data-tag-filters] button'));
+			const countEl = this.querySelector('[data-count]');
+			const emptyEl = this.querySelector('[data-empty]');
+			const clearButton = this.querySelector('[data-clear]') as HTMLButtonElement;
+
+			let activeTag = new URLSearchParams(location.search).get('tag') ?? '';
+
+			const applyFilters = () => {
+				const query = searchInput.value.trim().toLowerCase();
+				let visible = 0;
+
+				for (const row of rows) {
+					const haystack = `${row.dataset.title} ${row.dataset.description} ${row.dataset.tags}`;
+					const matchesQuery = !query || haystack.includes(query);
+					const matchesTag = !activeTag || (row.dataset.tags ?? '').split(',').includes(activeTag);
+					const show = matchesQuery && matchesTag;
+					(row.closest('li') as HTMLLIElement).hidden = !show;
+					if (show) visible++;
+				}
+
+				if (countEl) countEl.textContent = `${visible} post${visible === 1 ? '' : 's'}`;
+				if (emptyEl) emptyEl.classList.toggle('hidden', visible !== 0);
+
+				for (const chip of chips) {
+					const isActive = chip.dataset.tag === activeTag;
+					chip.className = (isActive ? chip.dataset.activeClass : chip.dataset.idleClass) ?? chip.className;
+				}
+
+				const url = new URL(location.href);
+				if (activeTag) url.searchParams.set('tag', activeTag);
+				else url.searchParams.delete('tag');
+				history.replaceState(null, '', url);
+			};
+
+			searchInput.addEventListener('input', applyFilters);
+			for (const chip of chips) {
+				chip.addEventListener('click', () => {
+					activeTag = activeTag === chip.dataset.tag ? '' : (chip.dataset.tag ?? '');
+					applyFilters();
+				});
+			}
+			clearButton.addEventListener('click', () => {
+				searchInput.value = '';
+				activeTag = '';
+				applyFilters();
+			});
+
+			applyFilters();
+		}
+	}
+
+	customElements.define('blog-browser', BlogBrowser);
+</script>

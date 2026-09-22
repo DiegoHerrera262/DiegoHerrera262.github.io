@@ -1,0 +1,54 @@
+{
+  "research" : [ {
+    "title" : "java-standard-input",
+    "description" : "This is a note from my roam system: java-standard-input"
+  }, {
+    "title" : "scala-standard-input",
+    "description" : "This is a note from my roam system: scala-standard-input"
+  }, {
+    "title" : "mvn-execute-program",
+    "description" : "This is a note from my roam system: mvn-execute-program"
+  }, {
+    "title" : "poetry-project-basic",
+    "description" : "This is a note from my roam system: poetry-project-basic"
+  }, {
+    "title" : "poetry-python-emacs",
+    "description" : "This is a note from my roam system: poetry-python-emacs"
+  }, {
+    "title" : "josephus-problem",
+    "description" : "This is a note from my roam system: josephus-problem"
+  }, {
+    "title" : "coding-challenges",
+    "description" : "This is a note from my roam system: coding-challenges"
+  }, {
+    "title" : "max-pairwise-product",
+    "description" : "This is a note from my roam system: max-pairwise-product"
+  }, {
+    "title" : "alejozen-cli-start",
+    "description" : "This is a note from my roam system: alejozen-cli-start"
+  } ],
+  "computer-science" : [ {
+    "title" : "josephus-problem",
+    "description" : "This is a note from my roam system: josephus-problem"
+  }, {
+    "title" : "coding-challenges",
+    "description" : "This is a note from my roam system: coding-challenges"
+  }, {
+    "title" : "max-pairwise-product",
+    "description" : "This is a note from my roam system: max-pairwise-product"
+  } ],
+  "learning" : [ {
+    "title" : "josephus-problem",
+    "description" : "This is a note from my roam system: josephus-problem"
+  }, {
+    "title" : "coding-challenges",
+    "description" : "This is a note from my roam system: coding-challenges"
+  }, {
+    "title" : "max-pairwise-product",
+    "description" : "This is a note from my roam system: max-pairwise-product"
+  } ],
+  "projects" : [ {
+    "title" : "alejozen-cli-start",
+    "description" : "This is a note from my roam system: alejozen-cli-start"
+  } ]
+}

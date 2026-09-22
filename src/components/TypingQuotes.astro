@@ -1,0 +1,61 @@
+---
+interface Props {
+	quotes: string[];
+}
+
+const { quotes } = Astro.props;
+---
+
+<typing-quotes data-quotes={JSON.stringify(quotes)} class="inline-flex items-baseline gap-0.5">
+	<span data-text>{quotes[0]}</span>
+</typing-quotes>
+
+<script>
+	// Same custom-element pattern as BlogBrowser: scoped to `this`, no
+	// framework, just the DOM API.
+	class TypingQuotes extends HTMLElement {
+		connectedCallback() {
+			const quotes = JSON.parse(this.dataset.quotes ?? '[]') as string[];
+			const textEl = this.querySelector('[data-text]') as HTMLElement | null;
+			if (quotes.length === 0 || !textEl) return;
+
+			const TYPE_MS = 90;
+			const DELETE_MS = 45;
+			const PAUSE_MS = 2400;
+
+			let index = 0;
+			// The first quote is already rendered in full server-side, so start
+			// the loop by pausing on it, then deleting into the cycle.
+			let charIndex = quotes[0].length;
+			let deleting = true;
+
+			const tick = () => {
+				const current = quotes[index];
+				if (deleting) {
+					charIndex--;
+					textEl.textContent = current.slice(0, charIndex);
+					if (charIndex === 0) {
+						deleting = false;
+						index = (index + 1) % quotes.length;
+						setTimeout(tick, TYPE_MS);
+						return;
+					}
+					setTimeout(tick, DELETE_MS);
+				} else {
+					charIndex++;
+					textEl.textContent = current.slice(0, charIndex);
+					if (charIndex === current.length) {
+						deleting = true;
+						setTimeout(tick, PAUSE_MS);
+						return;
+					}
+					setTimeout(tick, TYPE_MS);
+				}
+			};
+
+			setTimeout(tick, PAUSE_MS);
+		}
+	}
+
+	customElements.define('typing-quotes', TypingQuotes);
+</script>

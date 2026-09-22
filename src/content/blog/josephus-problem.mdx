@@ -1,0 +1,287 @@
+---
+title: Josephus problem
+date: 2026-09-01
+tags: ["computer-science","learning","research"]
+---
+
+# Context
+
+The josephus problem is based on a famous situation faced by Flavius
+Josephus, a rebel Jewish, during the Roman domination of Palestine. The
+history is that he and his rebel friends were surrounded by roman
+soldiers, and were offered the possibility of suicide instead of
+execution. To avoid death, he and a co-conspirator devised an strategy:
+
+Assume that there is a total of n rebels.
+
+- The rebels would lie in a circle, and be numbered from 1 to n.
+- From the number 1, the k-th rebel would be executed.
+- Then, from the immediate next rebel in clockwise direction to the one
+  that was just killed, the next (k-1)-th rebel would be killed,
+  assuming counting resumes from the start when necessary.
+
+Thar process would be iterated until all the rebels would be killed.
+Based on this dynamics, Josephus, who was very smart, calcualted which
+position he should be in, so that he would be the last survivor. That
+way, he could avoid death.
+
+> Provided n and k, the Josephus problem is to calculate the position of
+> the last survivor
+
+**INPUT:** Integers n and k **OUTPUT:** An integer between 1 and n, that
+represents the last survivor in the situation described above.
+
+# Insights
+
+This is not such a simple problem, but we can work a simple example:
+
+With a fully worked example, with k = 5 \< 7 = n
+
+``` bash
+n = 7, [1 2 3 4 5 6 7]
+n = 6, [1 2 3 4 6 7]
+n = 5, [1 2 4 6 7]
+n = 4, [1 4 6 7]
+n = 3, [1 6 7]
+n = 2, [1 6]
+n = 1, [6]
+```
+
+From this worked example, we can develop a naive algorithm, then refine
+it, and finally derive an optimal one.
+
+## Our Work horse
+
+Notice that the dynamic is circular. Given that we will work with
+integer numbers, we will use the **modular arithmetic**. The reason
+being that when we compute the next person to kill, may need to count
+over the first person (index 0), to arrive to the final index. In our
+worked example, the first iteration elimintes the fifth person. But if
+you count the fifth person after the next survivor in a circular manner,
+you will end up killing the one in position 3. The way we can make sure
+to count in a consistent manner is applying the following mathformula to
+any index:
+
+``` bash
+x -> (x - 1) % n + 1 === MD(x, n)
+```
+
+where the modulo operator represents the reminder of x - 1 when divided
+by n. By definition, the reminder is between 0 and n - 1, which ensures
+that any index processed in this way will always remain in the desired
+boundaries. Moreover, when x \> n, the modulo operator ensures the
+circular counting we expect as in the worked example. From now on, this
+work horse will be called **modular index** (MD). We will add the last
+name "modular index n" to an integer, whenever we refer to the result of
+applying the modular index transaformation described above, with n as
+the modulo parameter.
+
+## Naive Algorithm
+
+In the naive algorithm, we recreate exactly the dynamics of the
+situation, starting from an array of survivors. In each iteration, we
+will find a way to compute the array index of the person that is killed,
+and we just have to eliminate that person from the list. Then we compute
+the index of the next person to kill, based on the new number of
+survirors and the index of the previous killed rebel.
+
+In our first iteration, we know that we will have to eliminate the k-th
+survivor modular index n. After this, notice that the resulting array of
+survivors will have n - 1 elements, and the next survivor, i.e. the one
+right after the one just eliminated, will be at the position of index
+where we just eliminated. Because of this, the next eliminated will be
+(k-1) positions after the position were the last elimination took place.
+So that
+
+``` bash
+next_index_to_eliminate = MD(current_eliminated_index + k - 1, n - 1)
+```
+
+At this point, we can iterate again, and the process goes on until the
+stop condition is reached. Just for validation, we can create a table of
+the computation of the indices to eliminate while the dynamics is
+executed, for our worked example.
+
+| n   | previous-index | to-eliminate-index |
+|-----|----------------|--------------------|
+| 7   | n/a            | 5                  |
+| 6   | 5              | 3                  |
+| 5   | 3              | 2                  |
+| 4   | 2              | 2                  |
+| 3   | 2              | 3                  |
+| 2   | 3              | 1                  |
+
+Since we can understand the elimination process, we can just create a
+recursive procedure that executes the simulation. In any programming
+language that allows it, we can leverage tail recursion to prevent over
+using the stack.
+
+## A more refined algorithm
+
+The previous approach was a way to reduce the problem of size n to a
+smaller problem, of size n - 1. The main issue is that although we can
+compute the index that has to be killed in each iteration, that index is
+not exactly the number of the survivor. The price we pay is that we have
+to store in memory the survivors, and when we execute the dynamics, we
+know that in the alst step the only remaining element of the array is
+the number of the final survivor.
+
+We can do better. Notice that after the first elimination, we can
+re-index the survivors, so that the problem is exactly equivalent to the
+set up of n - 1 survivors, eliminating every k-th. In this case, the
+mapping is like
+
+``` bash
+6 -> 1
+7 -> 2
+1 -> 3
+2 -> 4
+3 -> 5
+4 -> 6
+```
+
+Assume we already have solved the problem, so that we know the solution
+of the problem for n - 1 and k. We can see that it is possible to
+recover the original index of that survivor in the n, k original problem
+by just adding k modular index n. In summary:
+
+``` bash
+josephus(n, k) = MD(josephus(n - 1, k) + k, n)
+```
+
+In a more "iterative" fashion
+
+``` bash
+josephus(n + 1, k) = MD(josephus(n, k) + k, n + 1)
+```
+
+The trivial base case is
+
+``` bash
+josephus(1, k) = 1
+```
+
+Why use an iterative approach, i.e. the one that starts from an small n
+to a larger n, rather than a recursive approach, i.e. from larger n to
+small n? The answer is memory optimization is easier in the first case.
+To use the recursive approach we have to be explicit with tail
+recursion. On the other hand, the iterative approach can rely on a lazy
+sequence and then it can be made trivially memory efficient.
+
+## We can do even better
+
+This idea of reducing the problem size and re-mapping can take us even
+further. When n \>= 2k, we can already eliminate several survivors in a
+single iteration. Then we just map the survivors to the problem of n -
+floor(n / k), k. If we assume that problem is solved, we just have to
+transform back to the initial set up, just like we did in the iterative
+solution. The caveat here is that the mapping is not that simple, at
+least mathematically speaking. Just to motivate the effort, notica that
+if we are able to reduce the sice consistenly by a factor of
+(approximately)
+
+``` bash
+1 - 1 / k
+```
+
+This new algorithm can reach an exponential speed up! I think that is
+worth the effort. To get a feel for the mapping, we can consider an
+example with n = 10 and k = 4. First, lets apply a mapping that help us
+start fresh
+
+``` bash
+          M1     M2
+1  --> 1  ->- 1  >-- 3
+2  --> 2  ->- 2  >-- 4
+3  --> 3  ->- 3  >-- 5
+4  x-> -
+5  --> 5  ->- 4  >-- 6
+6  --> 6  ->- 5  >-- 7
+7  --> 7  ->- 6  >-- 8
+8  x-> -
+9  --> 9* ->- 7* >-- 1
+10 --> 10 ->- 8  >-- 2
+```
+
+In this schema, it is fairly easy to see that all multiples of k that
+are less than n are aliminated (a total of floor(10 / 4)), leaving
+subgroups of k - 1 elements (in our example groups of 3). Notice that
+the 9th survivor was the one that should start the next iteration, so we
+would like to map it to the first position somehow. The last state
+reflects this, and is completely equivalent to the Josephus problem for
+n - 1, k. For sake of argument, assume the solution was found using the
+iterative josephus, and it is 6. From our reasoning, this means that the
+solution of the problem for n, k is found to be the inverse map from 6
+to the initial state, which is 5. A direct verification using iterative
+josephus, holds this as true.
+
+To simplify the problem, we can decompose the transformation in two
+mappings, M1 and M2. If we invert each one, then the invertion from the
+final state to the intial state is just the composition of the inverse
+mappings in reversed direction.
+
+### Inverting the M2 mapping
+
+This mapping is the one that actually moves the next survivor after the
+first iteration to the index 1. This actually only moves them in a
+circular way, clockwise, and the net displacement is by n % k units. To
+be more precise the circular movement is captured by our MD
+transformation, considering that the size of the collection is now n -
+floor(n / k). So we define:
+
+``` bash
+M2(x, n, k) = MD(x + n % k, n - floor(n / k))
+```
+
+Thus the inverse is fairly straightforward
+
+``` bash
+iM2(x, n, k) = MD(x - n % k, n - floor(n / k))
+```
+
+Notice that if n is multiple of k, this mapping is irrelevant as the
+next survivor will always be the first one after the first iteration.
+
+### Inverting M1
+
+This one is more tricky, but fairly doable. The key is to see that after
+the first iteration, all multiples of k have been eliminated, and the
+resulting survivors can be assigned to one group of k - 1 survivors. The
+first group, that in our example is (1, 2, 3), remains unchanged. The
+second group, (4, 5, 6), is reversed to the set (5, 6, 7), so each
+survivor is actually increased by 1. The last group, (7, 8), is reversed
+to (9, 10), so is increased by 2. And this pattern is now clear. We can
+numerate the groups starting from 0 instead, and then we can see that
+the inverse map just implies increasing a given survivor number by the
+group number. So the question that remains is how to compute the grup
+number for a given survivor. It is not that hard to see that, provided a
+survivor x, the group number is
+
+``` bash
+floor((x - 1) / (k - 1))
+```
+
+As a result, it is defined that:
+
+``` bash
+iM1(x, k) = x + floor((x - 1) / (k - 1))
+```
+
+### The efficient solution
+
+Now we have all the elements to propose our more efficient solution of
+the Josephus problem when n \> k
+
+``` bash
+josephus(n, k) = iM1(iM2(josephus(n - floor(n / k)), n, k), k)
+```
+
+Once n \<= k, we resort to the iterative josephus solution, which now
+takes us to the base case.
+
+# Related Resources
+
+- [Problem
+  statement](chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://alexanderskulikov.github.io/files/toolbox_statements.pdf?utm_source=coursera&utm_medium=materials&utm_campaign=link)
+- [Other discussions about the
+  problem](https://cp-algorithms.com/others/josephus_problem.html)

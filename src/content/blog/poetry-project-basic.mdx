@@ -1,0 +1,100 @@
+---
+title: Poetry project basic
+date: 2026-07-04
+tags: ["projects","research"]
+---
+
+# Context
+
+In order to complete the Data Structures And Algorithms specialization
+in coursera, I had to set up python, given that the JVM languages I
+tried to use we're not set up correctly in the grading system. I wanted
+to be able to set up a project that allows me to have:
+
+- LSP server
+- REPL like development flow
+- Unit testing
+- Property testing
+- Test automations
+
+# Insights
+
+I asked Gemini, and it suggested I use poetry. So poetry is like mvn or
+leiningen, but for python. It is not the latest industry standard, but
+it was good enough for a small algorithms project with the requirements
+above. So here I post the most basic stuff to use poetry
+
+## Installing poetry
+
+```text
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+It is recommended that poetry be installed with the official installer,
+rather than using pipx. Check the related resources for the docs
+
+## Creating a project
+
+``` bash
+poetry new projects/algos-ds-python --src
+```
+
+The –src flag instructs poetry to create the code inside a
+`.projects/algos-ds-python/src/algos_ds_python` directory. However,
+seems like now the src convention is the default.
+
+```text
+./
+├── dist
+│   ├── algos_ds_python-0.1.0-py3-none-any.whl
+│   └── algos_ds_python-0.1.0.tar.gz
+├── poetry.lock
+├── pyproject.toml
+├── README.md
+├── src
+│   └── algos_ds_python
+│       ├── __init__.py
+│       ├── __pycache__
+│       │   ├── __init__.cpython-310.pyc
+│       │   └── pairwise_product.cpython-310.pyc
+│       └── pairwise_product.py
+└── tests
+    ├── __init__.py
+    ├── __pycache__
+    │   ├── __init__.cpython-310.pyc
+    │   ├── test_pairwise_product.cpython-310-pytest-7.1.2.pyc
+    │   └── test_pairwise_product.cpython-310-pytest-9.1.1.pyc
+    └── test_pairwise_product.py
+```
+
+I copied and pasted the general file structure generated.
+
+## Managing dependencies
+
+``` bash
+poetry add pytest --group dev
+```
+
+In this command, pytest was added as a dev dependency to the project.
+Poetry records the dependencies in the pyproject.toml file. It is best
+to use the above command rather than updating the dependencies manually
+for newcomers like me (at this stage at least).
+
+## Getting help
+
+``` bash
+poetry -h
+```
+
+This is useful since you can get help about all possible commands, and
+it will allow you to discover actions on demand. With the command below
+it is possible to list all commands to find some that suits the moment.
+
+``` bash
+poetry list
+```
+
+# Related Resources
+
+- [Poetry installation with official
+  installer](https://python-poetry.org/docs/#installing-with-the-official-installer)
