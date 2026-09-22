@@ -1,61 +1,30 @@
 ---
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
+import BlogBrowser from '../../components/BlogBrowser.astro';
 import Footer from '../../components/Footer.astro';
-import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
 import TerminalWindow from '../../components/TerminalWindow.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import { getDescriptions } from '../../lib/postMeta';
 
 const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+	(a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
+const descriptions = getDescriptions();
+const activeTag = Astro.url.searchParams.get('tag') ?? '';
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={`Blog · ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
 		<Header />
 		<main class="flex-1 px-4 py-8 sm:px-6">
-			<TerminalWindow path="~/blog$ ls -la" class="mx-auto max-w-4xl">
-				<p class="mb-4 text-sm text-ctp-subtext1">
-					total {posts.length}
-				</p>
-				<ul class="divide-y divide-ctp-surface0">
-					{
-						posts.map((post) => (
-							<li>
-								<a
-									href={`/blog/${post.id}/`}
-									class="group flex flex-col gap-3 rounded px-2 py-3 no-underline transition-colors hover:bg-ctp-surface0 sm:flex-row sm:items-center sm:gap-4"
-								>
-									{post.data.heroImage && (
-										<Image
-											width={128}
-											height={72}
-											src={post.data.heroImage}
-											alt=""
-											class="h-16 w-28 flex-none rounded border border-ctp-surface0 object-cover"
-										/>
-									)}
-									<div class="min-w-0 flex-1">
-										<p class="truncate text-ctp-text group-hover:text-ctp-mauve">
-											<span class="text-ctp-green">-rw-r--r--</span>{' '}
-											<span class="font-semibold">{post.data.title}.md</span>
-										</p>
-																			<p class="text-sm text-ctp-subtext1">
-																				<FormattedDate date={post.data.pubDate} />
-																			</p>
-									</div>
-								</a>
-							</li>
-						))
-					}
-				</ul>
+			<TerminalWindow path="~/blog$ browse" class="mx-auto max-w-[80ch]">
+				<BlogBrowser posts={posts} descriptions={descriptions} activeTag={activeTag} />
 			</TerminalWindow>
 		</main>
 		<Footer />

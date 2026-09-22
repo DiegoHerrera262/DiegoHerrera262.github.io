@@ -1,0 +1,49 @@
+---
+import { colorForTag, type TagColor } from '../lib/tagColor';
+
+interface Props {
+	tag: string;
+	/** Render as a clickable filter control instead of a plain label. */
+	as?: 'span' | 'button';
+	active?: boolean;
+	class?: string;
+}
+
+// Tailwind's scanner needs literal class names in source, so the
+// per-color classes can't be built with template-string interpolation —
+// they're spelled out here instead, keyed by the hashed color.
+const CLASSES: Record<TagColor, { idle: string; active: string; hover: string }> = {
+	mauve: { idle: 'border-ctp-mauve text-ctp-mauve bg-ctp-mauve/10', active: 'bg-ctp-mauve text-ctp-crust', hover: 'hover:bg-ctp-mauve/25' },
+	red: { idle: 'border-ctp-red text-ctp-red bg-ctp-red/10', active: 'bg-ctp-red text-ctp-crust', hover: 'hover:bg-ctp-red/25' },
+	green: { idle: 'border-ctp-green text-ctp-green bg-ctp-green/10', active: 'bg-ctp-green text-ctp-crust', hover: 'hover:bg-ctp-green/25' },
+	yellow: { idle: 'border-ctp-yellow text-ctp-yellow bg-ctp-yellow/10', active: 'bg-ctp-yellow text-ctp-crust', hover: 'hover:bg-ctp-yellow/25' },
+	blue: { idle: 'border-ctp-blue text-ctp-blue bg-ctp-blue/10', active: 'bg-ctp-blue text-ctp-crust', hover: 'hover:bg-ctp-blue/25' },
+	pink: { idle: 'border-ctp-pink text-ctp-pink bg-ctp-pink/10', active: 'bg-ctp-pink text-ctp-crust', hover: 'hover:bg-ctp-pink/25' },
+	teal: { idle: 'border-ctp-teal text-ctp-teal bg-ctp-teal/10', active: 'bg-ctp-teal text-ctp-crust', hover: 'hover:bg-ctp-teal/25' },
+	peach: { idle: 'border-ctp-peach text-ctp-peach bg-ctp-peach/10', active: 'bg-ctp-peach text-ctp-crust', hover: 'hover:bg-ctp-peach/25' },
+};
+
+const { tag, as = 'span', active = false, class: className } = Astro.props;
+const color = colorForTag(tag);
+const { idle, active: activeClasses, hover } = CLASSES[color];
+const Element = as;
+const base = 'inline-flex items-center rounded-none border px-1.5 py-0.5 font-mono text-xs leading-none whitespace-nowrap';
+// For `as="button"`, the blog index's filter script toggles active state by
+// swapping between these two pre-resolved class strings client-side (it
+// can't recompute Tailwind classes at runtime).
+const idleButtonClasses = [base, idle, 'cursor-pointer transition-colors', hover, className].filter(Boolean).join(' ');
+const activeButtonClasses = [base, activeClasses, 'cursor-pointer transition-colors', className].filter(Boolean).join(' ');
+---
+
+<Element
+	data-tag={tag}
+	data-idle-class={as === 'button' ? idleButtonClasses : undefined}
+	data-active-class={as === 'button' ? activeButtonClasses : undefined}
+	class:list={
+		as === 'button'
+			? active
+				? activeButtonClasses
+				: idleButtonClasses
+			: [base, active ? activeClasses : idle, className]
+	}
+>#{tag}</Element>

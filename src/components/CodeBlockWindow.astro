@@ -1,0 +1,21 @@
+---
+// MDX `pre` override (passed via `<Content components={{ pre: CodeBlockWindow }} />`
+// in [...slug].astro) — wraps each rendered code block in terminal chrome.
+// Astro's built-in Shiki renderer sets `data-language` on the `<pre>` it emits.
+interface Props {
+	'data-language'?: string;
+	class?: string;
+}
+
+const { 'data-language': language = 'text', class: className, ...rest } = Astro.props;
+---
+
+<div class="my-6 overflow-hidden rounded-lg border border-ctp-surface0 shadow-lg shadow-ctp-crust/40">
+	<div class="flex items-center gap-2 border-b border-ctp-surface0 bg-ctp-crust/40 px-4 py-2">
+		<span class="h-2.5 w-2.5 rounded-full bg-ctp-red"></span>
+		<span class="h-2.5 w-2.5 rounded-full bg-ctp-yellow"></span>
+		<span class="h-2.5 w-2.5 rounded-full bg-ctp-green"></span>
+		<span class="ml-2 font-mono text-xs text-ctp-subtext1">{language}</span>
+	</div>
+	<pre class:list={['!my-0', className]} {...rest}><slot /></pre>
+</div>

@@ -1,0 +1,81 @@
+---
+interface Entry {
+	org: string;
+	role: string;
+	range: string;
+	location: string;
+	highlight: string;
+}
+
+const ENTRIES: Entry[] = [
+	{
+		org: 'Nubank',
+		role: 'Software Engineer',
+		range: 'Nov 2023 — Present',
+		location: 'Bogotá, Colombia',
+		highlight: 'Backend platforms in Clojure for financial services, working across global teams.',
+	},
+	{
+		org: 'Dataico',
+		role: 'Support Engineer',
+		range: 'Aug 2023 — Nov 2023',
+		location: 'Bogotá, Colombia',
+		highlight: "Fullstack financial apps built with Clojure's Fulcro RAD.",
+	},
+	{
+		org: 'Pandas',
+		role: 'Semi-senior Software Developer',
+		range: 'Jul 2022 — Aug 2023',
+		location: 'Bogotá, Colombia',
+		highlight: 'PWA and internal tools for the main user app, plus third-party integrations.',
+	},
+	{
+		org: 'Pandas',
+		role: 'Junior Software Developer',
+		range: 'Jan 2022 — Jul 2022',
+		location: 'Bogotá, Colombia',
+		highlight: 'UI for internal and customer-facing products with Next.js and React.',
+	},
+	{
+		org: 'SuperVeci',
+		role: 'Junior Software Developer',
+		range: 'May 2021 — Dec 2021',
+		location: 'Bogotá, Colombia',
+		highlight: 'Main frontend for a partner company.',
+	},
+	{
+		org: 'Universidad Nacional de Colombia',
+		role: 'BS, Physics',
+		range: 'Jan 2016 — Feb 2022',
+		location: 'Bogotá, Colombia',
+		highlight: 'Undergraduate thesis in quantum computing simulations.',
+	},
+];
+
+// Purely decorative fake commit hash, deterministic per entry — the whole
+// point is the "git log" feel, not a real identifier.
+function fakeHash(seed: string): string {
+	let h = 0;
+	for (const c of seed) h = (h * 31 + c.charCodeAt(0)) | 0;
+	return Math.abs(h).toString(16).padStart(7, '0').slice(0, 7);
+}
+---
+
+<ol class="not-prose relative ml-3 list-none border-l-2 border-ctp-surface0 pl-6">
+	{
+		ENTRIES.map((entry) => (
+			<li class="relative pb-8 last:pb-0">
+				<span class="absolute top-1.5 -left-[1.8125rem] h-2.5 w-2.5 rounded-full bg-ctp-mauve" />
+				<p class="font-mono text-sm">
+					<span class="text-ctp-peach">{fakeHash(`${entry.org}-${entry.role}-${entry.range}`)}</span>{' '}
+					<span class="font-semibold text-ctp-text">{entry.role}</span>
+					<span class="text-ctp-subtext1"> · {entry.org}</span>
+				</p>
+				<p class="mt-0.5 text-xs text-ctp-subtext1">
+					{entry.range} — {entry.location}
+				</p>
+				<p class="mt-1 text-sm text-ctp-subtext0">{entry.highlight}</p>
+			</li>
+		))
+	}
+</ol>
