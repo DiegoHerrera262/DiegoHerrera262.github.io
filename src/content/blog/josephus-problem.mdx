@@ -6,7 +6,7 @@ tags: ["computer-science","learning","research"]
 
 # Context
 
-The josephus problem is based on a famous situation faced by Flavius
+The Josephus problem is based on a famous situation faced by Flavius
 Josephus, a rebel Jewish, during the Roman domination of Palestine. The
 history is that he and his rebel friends were surrounded by roman
 soldiers, and were offered the possibility of suicide instead of
@@ -21,7 +21,7 @@ Assume that there is a total of n rebels.
   assuming counting resumes from the start when necessary.
 
 Thar process would be iterated until all the rebels would be killed.
-Based on this dynamics, Josephus, who was very smart, calcualted which
+Based on this dynamics, Josephus, who was very smart, calculated which
 position he should be in, so that he would be the last survivor. That
 way, he could avoid death.
 
@@ -56,10 +56,10 @@ Notice that the dynamic is circular. Given that we will work with
 integer numbers, we will use the **modular arithmetic**. The reason
 being that when we compute the next person to kill, may need to count
 over the first person (index 0), to arrive to the final index. In our
-worked example, the first iteration elimintes the fifth person. But if
+worked example, the first iteration eliminates the fifth person. But if
 you count the fifth person after the next survivor in a circular manner,
 you will end up killing the one in position 3. The way we can make sure
-to count in a consistent manner is applying the following mathformula to
+to count in a consistent manner is applying the following math formula to
 any index:
 
 ``` bash
@@ -73,7 +73,7 @@ boundaries. Moreover, when x \> n, the modulo operator ensures the
 circular counting we expect as in the worked example. From now on, this
 work horse will be called **modular index** (MD). We will add the last
 name "modular index n" to an integer, whenever we refer to the result of
-applying the modular index transaformation described above, with n as
+applying the modular index transformation described above, with n as
 the modulo parameter.
 
 ## Naive Algorithm
@@ -83,7 +83,7 @@ situation, starting from an array of survivors. In each iteration, we
 will find a way to compute the array index of the person that is killed,
 and we just have to eliminate that person from the list. Then we compute
 the index of the next person to kill, based on the new number of
-survirors and the index of the previous killed rebel.
+survivors and the index of the previous killed rebel.
 
 In our first iteration, we know that we will have to eliminate the k-th
 survivor modular index n. After this, notice that the resulting array of
@@ -123,7 +123,7 @@ smaller problem, of size n - 1. The main issue is that although we can
 compute the index that has to be killed in each iteration, that index is
 not exactly the number of the survivor. The price we pay is that we have
 to store in memory the survivors, and when we execute the dynamics, we
-know that in the alst step the only remaining element of the array is
+know that in the last step the only remaining element of the array is
 the number of the final survivor.
 
 We can do better. Notice that after the first elimination, we can
@@ -176,8 +176,8 @@ single iteration. Then we just map the survivors to the problem of n -
 floor(n / k), k. If we assume that problem is solved, we just have to
 transform back to the initial set up, just like we did in the iterative
 solution. The caveat here is that the mapping is not that simple, at
-least mathematically speaking. Just to motivate the effort, notica that
-if we are able to reduce the sice consistenly by a factor of
+least mathematically speaking. Just to motivate the effort, notice that
+if we are able to reduce the size consistently by a factor of
 (approximately)
 
 ``` bash
@@ -204,20 +204,20 @@ start fresh
 ```
 
 In this schema, it is fairly easy to see that all multiples of k that
-are less than n are aliminated (a total of floor(10 / 4)), leaving
+are less than n are eliminated (a total of floor(10 / 4)), leaving
 subgroups of k - 1 elements (in our example groups of 3). Notice that
 the 9th survivor was the one that should start the next iteration, so we
 would like to map it to the first position somehow. The last state
 reflects this, and is completely equivalent to the Josephus problem for
 n - 1, k. For sake of argument, assume the solution was found using the
-iterative josephus, and it is 6. From our reasoning, this means that the
+iterative Josephus, and it is 6. From our reasoning, this means that the
 solution of the problem for n, k is found to be the inverse map from 6
 to the initial state, which is 5. A direct verification using iterative
-josephus, holds this as true.
+Josephus, holds this as true.
 
 To simplify the problem, we can decompose the transformation in two
-mappings, M1 and M2. If we invert each one, then the invertion from the
-final state to the intial state is just the composition of the inverse
+mappings, M1 and M2. If we invert each one, then the inversion from the
+final state to the initial state is just the composition of the inverse
 mappings in reversed direction.
 
 ### Inverting the M2 mapping
@@ -233,7 +233,7 @@ floor(n / k). So we define:
 M2(x, n, k) = MD(x + n % k, n - floor(n / k))
 ```
 
-Thus the inverse is fairly straightforward
+Thus, the inverse is fairly straightforward
 
 ``` bash
 iM2(x, n, k) = MD(x - n % k, n - floor(n / k))
@@ -244,7 +244,7 @@ next survivor will always be the first one after the first iteration.
 
 ### Inverting M1
 
-This one is more tricky, but fairly doable. The key is to see that after
+This one is trickier, but fairly doable. The key is to see that after
 the first iteration, all multiples of k have been eliminated, and the
 resulting survivors can be assigned to one group of k - 1 survivors. The
 first group, that in our example is (1, 2, 3), remains unchanged. The
@@ -253,7 +253,7 @@ survivor is actually increased by 1. The last group, (7, 8), is reversed
 to (9, 10), so is increased by 2. And this pattern is now clear. We can
 numerate the groups starting from 0 instead, and then we can see that
 the inverse map just implies increasing a given survivor number by the
-group number. So the question that remains is how to compute the grup
+group number. So the question that remains is how to compute the group
 number for a given survivor. It is not that hard to see that, provided a
 survivor x, the group number is
 
