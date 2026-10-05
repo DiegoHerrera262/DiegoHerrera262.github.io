@@ -1,0 +1,252 @@
+---
+title: Raspberry pi connection to iPad
+date: 2026-10-01
+tags: ["electronics","projects","research"]
+---
+
+# Context
+
+I've always wanted to have an awesome mobile setup that I could use to
+work from anywhere in the world. I'm both a physicist and a software
+engineer. This means that I love both solving partial differential
+equations and coding a CLI. And I like solving my equations by hand,
+using a pencil and some board. While studying for my undergrad, I
+purchased an iPad Air 7 Gen to hand-write my notes. I had a really cute
+flash USB with Slackware, from which I booted my father's HP computer
+(Spanish pun intended), which he used for his consultant work.
+Eventually I was able to afford a MacBook Air. So my mobile stack
+included an iPad and a MacBook. It worked for a while, but I missed the
+Slackware experience. It was lightweight, I could really mess up my
+environment and all I had to do was flashing the OS again and it would
+be ready to go and be teared down.
+
+I don't recall the exact date, but I was watching YouTube videos and
+came across a guy that connected a raspberry pi to his iPad Pro,
+powering it using an USB cable. To me, that was the dream. A truly
+portable, low cost PC, accessible directly from the most powerful
+touchscreen in the market. I know, I know. An iPad is not particularly
+cheap. And I can probably get the same value per buck if I had a pi and
+3D Printed a case for it and a touchscreen from eBay. However, I'm
+totally in love with Apple's ecosystem. So I had to try the iPad +
+raspberry pi setup. I'm kind of a scientist myself (Spidey pun intended
+here too). So I needed to create this monster, this new Prometheus.
+
+# Insights
+
+## Writing the memories of our Prometheus
+
+So I had to build a monster, like Dr. Frankenstein. I had to purchase a
+V3 - A2 SD card to be able to have the best experience with the
+raspberry connected to the iPad. I flashed a 64-bit Raspberry Pi OS recommended
+distribution. I used the official raspberry pi installer app for mac.
+This is the easiest part, to be honest. The installer is super
+intuitive, and you can configure a username with password, and ssh
+connections (either using a key or a password). You just have to be
+careful to select the right external storage device, because the
+installer will empty it and put a new OS inside. So make sure you don't
+accidentally select your USB with that 2000's trip with friends as your
+target device. I had an NVME and two SD cards (one V10 - A1 and another
+V30 - A2), and I think I can rank them in the following way:
+
+1.  NVME: A total freaking beast! Flashes faster than it takes to unbox.
+2.  SD V30 - A2: Decent write time, can be throttled by the port.
+3.  SD V10 - A1: I wouldn't say it is a pain, but it definitely takes
+    the longest
+
+In most of the tutorials I saw, the recommendation is to go for the
+middle ground. I purchased an NVME because I wanted to have large
+storage capacity for other projects like mounting my own k3s cluster,
+experiment running LLM servers, learning about monitoring and micro
+systems architectures, and whatnot. There is an important caveat:
+
+> The iPad's output power is not enough to sustain a raspberry pi with
+> an NVME connected using a HAT. The HAT is fine, but the NVME draws too
+> much power.
+
+As a result, my mobile setup relies on an SD card boot. When I want to
+tame a beast like a full blown physics simulation that requires a ton
+of memory or a test micro services app, I'll resort to the NVME and ssh
+into the PI via Wi-Fi. An idiot's tip: if you forget your username and
+host, you can plug in your card or NVME again and run through the steps
+of the Image Manager, it will recover what the card already has or at
+least your previous information.
+
+## Setting up the body of our Prometheus
+
+This is the bitter sweet part. When I saw that guy's video, he used the
+Blink app. It is a shell app that allows you to ssh or mosh into any server
+that allows it. It has a really nice interface and it is intuitive. It
+is also possible to persist connection information so that you can save
+server details, generate ssh keys and automate the connection process.
+The problem: it has a subscription model. Like all good things,
+capitalism ruins them. It used to be a one time purchase, but I guess to
+make the business sustainable, they resorted to a cursed subscription of
+about 100k COP per year, with a 14 day free period. I think I'll
+subscribe just because I used blink before and liked it a lot, but I'll
+be very watchful to other comparable and cheaper alternatives. This was
+almost a deal breaker for me. But, I imagined myself being able to
+invert a binary tree while waiting for a long flight to Rio or Madrid,
+and I said "what the hell! Let's go!". There is a nice point that blink
+manages: iPad sleeps. Almost forgot about that—heh. When the iPad
+sleeps the connection is lost, or even sometimes iOS can close the
+connection unexpectedly, and blink can handle this, specially when using
+mosh.
+
+> In this setup, it is almost mandatory to use `tmux` to manage persistent
+> sessions. If a connection is lost, `tmux` still allows the pi to go on
+> with the tasks.
+
+I already have my workflows very integrated with `tmux`, so I recommend
+using it. I also have customized it a bit. However, there are other
+options (not that I have looked into any) for solving this exact same
+problem. So feel free to investigate, find one that suits you and maybe
+experiment with others. I can do this myself too. I may want to find one
+that integrates well with AI agents. But who knows? I already can
+integrate with AI agents with `tmux` in a decent way so… Anyway…
+
+Listen, it is possible to connect to the pi via Wi-Fi using an ssh
+connection. But then, you start depending on the Wi-Fi stability and
+security. If the Wi-Fi is public or unstable, the connection will be
+flaky at best, and a security catastrophe at worst. So this is not an
+option for me. The really good news is that we can connect using an
+USB - C cable. All we have to do is enable the pi as an Ethernet device,
+and connecting to it in the iPad's normal network settings options. This
+is awesome because then the connection is way more stable.
+
+I refuse to talk about cases, cooling and so on for the pi. This setup
+is minimal, and trust me, the less expensive, and minimal, the better.
+Then it is possible to upgrade. I purchased an aluminum case that was
+provided by
+[GeekPi](https://www.amazon.com/dp/B0DMW98LBR?ref=ppx_yo2ov_dt_b_fed_asin_title&th=1),
+because it already came with an NVME HAT that supports PoE+. It also
+includes an official cooler and that was nice. And now a big but: you
+don't need all of this to start. With a nice SD card (that one is
+important though), and a cheap case with decent cooling, that is more
+than enough. On the iPad side, I do suggest spending your money. After
+all it is what you will look at. I recommend a beast, with the magic
+keyboard. The experience then becomes more laptop-ish. And now the
+second big but: as long as the iPad provides an USB-C connection and is
+able to use Ethernet, that is fine. A Bluetooth keyboard and mouse are
+just good enough. You see, I said I wouldn't talk and I talked. I
+definitely cannot work for any spy agency.
+
+## It's alive! (Kinda)
+
+Okay, so I've discussed the perspective and the basic setup. But I had
+to actually ssh into the pi, when connected to the iPad, via Wi-Fi,
+before being able to enable the USB-C connection via Ethernet. The
+reason being that this is not a default mode of the pi. The pi is not a
+gadget by default. It expects to be the main. So I had to teach it to be
+a gadget. However, ssh-ing for the first time was the fire baptism of my
+Prometheus. The first boot is the longest one, and you will see a green
+led blinking in the pi, that shows it is loading the OS into RAM. After
+a minute or so, it should stop blinking. Let me tell ya, there is no
+better feeling that being able to ssh from the blink app into the pi. I
+swear, I definitely yelled "It's alive!". I loved that I was able to had
+my Prometheus connected via ssh using Wi-Fi. But that is definitely not
+the end. At least for the ones of pure heart. If you go this far and
+still use Wi-Fi, you deserve being haunted by your Prometheus through
+Europe, while you see your most beloved git repositories being destroyed, and
+end up with your GitHub account deleted. It deserves to have its brains
+and body connected by a worthy USB-C cable.
+
+> Please, if you still think Frankenstein is the monster, go and read
+> the book. Then come back to the actual "It's alive!" moment.
+
+To be honest, although I had to harvest the components from the horrible
+morgue that is Amazon.com, I didn't have to do much about software
+configurations at this point. The Raspberry foundation is doing a really
+amazing work in enabling everyone to start getting hands on with
+computing and engineering. Kudos to them. They definitely enabled my
+Prometheus.
+
+## It's alive! (Finally)
+
+My Prometheus looked promising, but was not fully alive yet. It just
+kicked, like a frog in some Italian's experiment (physics pun intended
+here too). I needed to enable the USB Ethernet connection. This requires
+installing/updating a software package in the Pi, and that is the reason
+why I had to ssh first into the pi from blink. First things first: not
+all Raspberry Pi OS versions support this. Only Trixie or later allow this
+behavior (and yes, Trixie as in toy story). If a heaven exists, then it
+is definitely reserved for the Raspberry Pi team! They released a tool
+called `rpi-usb-gadget`, that allows it to configure itself as that: an
+USB gadget. I confirmed the pi is up to date with the toy story canon,
+running Trixie, and then only had to execute the following commands:
+
+``` bash
+sudo apt update
+sudo apt install rpi-usb-gadget
+sudo rpi-usb-gadget on
+sudo reboot
+```
+
+And… Is it alive? Not yet. The reboot takes some time, and once the
+system starts, it is enabled as an Ethernet router in the iPad's network
+settings. So then I had to ssh into the pi again, and I was able to
+connect. It has its own network like its own nervous system. You see,
+it is not quite alive, but its brain is starting to communicate with its
+body using a USB spinal cord. There is something worth noting. Since
+the cable has to provide both power and data to the pi, it is best if it
+is sturdy and thick. Here thickness does matter, and the shorter the
+better. Who would have thought? Anyways, that's how the necks of the
+monsters should be right?
+
+Okay, so now it is really important to automate the ssh process. I don't
+like ssh-ing using passwords. So I prefer to create keys, then tell the
+server that the new key is authorized, and ssh using it. I think it is
+safer and simpler. So what did I have to do?
+
+- I had to configure the pi host in blink app, which was really easy.
+  Only don't forget to add the `.local` at the end of the `hostname`.
+- I had to create a new key in the blink app, and name it semantically
+  so that I don't forget.
+- Then I configured the host to use that key for ssh-ing.
+- Then I had to copy the key to the pi server using
+
+``` bash
+ssh-copy-id <my-key-name> username@hostname.local
+```
+
+Then it is super simple to ssh from blink, just use
+
+``` bash
+ssh <blink-host-name>
+```
+
+There is a recommendation from that guy on the video: use mosh for
+better UI experience. Since ssh is a connection over the network, if the
+connection is flaky, so is the UI experience. And nothing worse than
+having an already slow editor with an slow typing experience. To
+overcome this, only use `mosh`. It is fairly easy to install using apt,
+and then instead of calling ssh, call mosh, and that's it. And finally,
+after harvesting the most beautiful and horrific computer hardware parts
+from the depths of Amazon.com, after playing god by enabling a USB-C
+Ethernet connection in my Prometheus, and configuring an autonomous
+ssh-connected brain, I finally yelled: IT'S ALIVE!!!
+
+## Time to paint the town red!
+
+I know this is a long post, with a lot of stuff, so thanks for following
+me and my madness. I really appreciate it. The new Prometheus is a
+powerful machine with a headless interface. I refuse to configure a VPC
+or similar to see the hideous Gnome desktop in my beautiful iPad. If
+anything, when I try omarchy, I'll consider a VPC. I think now I have to
+create automation to install all my preferred editors, programming
+languages, LSP servers and so on, on my pi. After all, my pi is a sort of
+playground environment that should be destroyable, and easily
+reconstructed. So to that end, I'm preparing
+[alejozen-cli-start](/blog/alejozen-cli-start) to aid
+with the process. But that is a matter for another post.
+
+# Related Resources
+
+- [Raspberry Pi official website to download the Image
+  Manager](https://www.raspberrypi.com/software/)
+- [This YouTube tutorial is really
+  nice!](https://www.youtube.com/watch?v=WBLpaS86Z9c&t=234s)
+- [Official app store blink app
+  link](https://apps.apple.com/us/app/blink-shell-build-code/id1594898306)
+- [Trixie supporting ssh over usb-c via Ethernet
+  connection](https://www.raspberrypi.com/news/usb-gadget-mode-in-raspberry-pi-os-ssh-over-usb/)
+- [The guy from the video](https://www.youtube.com/watch?v=8LcTA5m6_ts)
